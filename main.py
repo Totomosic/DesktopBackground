@@ -6,6 +6,10 @@ import requests
 import praw
 from PIL import Image
 
+# NEED TO INSTALL PYTHON AND THEN LINTING FEATURE USING 
+# "C:/Users/Arun Muthu/AppData/Local/Programs/Python/Python37/python.exe" -m pip install -U pylint --user
+# apm@DESKTOP-835LSIG:/mnt/c/Users/Arun Muthu$ "C:/Users/Arun Muthu/AppData/Local/Programs/Python/Python37/python.exe" -m pip install -U pylint --user
+
 import argparse
 
 IMAGE_FILE_NAME = "BackgroundImage"
