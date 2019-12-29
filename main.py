@@ -16,16 +16,19 @@ def get_absolute_path(path):
 
 def download_image(url, filename):
     with open(filename, 'wb') as handle:
-        response = requests.get(url, stream=True)
+        try:
+            response = requests.get(url, stream=True)
 
-        if not response.ok:
+            if not response.ok:
+                return False
+
+            for block in response.iter_content(1024):
+                if not block:
+                    break
+
+                handle.write(block)
+        except:
             return False
-
-        for block in response.iter_content(1024):
-            if not block:
-                break
-
-            handle.write(block)
     return True
 
 def equals_epsilon(val, other, ep):
