@@ -6,10 +6,6 @@ import requests
 import praw
 from PIL import Image
 
-# NEED TO INSTALL PYTHON AND THEN LINTING FEATURE USING 
-# "C:/Users/Arun Muthu/AppData/Local/Programs/Python/Python37/python.exe" -m pip install -U pylint --user
-# apm@DESKTOP-835LSIG:/mnt/c/Users/Arun Muthu$ "C:/Users/Arun Muthu/AppData/Local/Programs/Python/Python37/python.exe" -m pip install -U pylint --user
-
 import argparse
 
 IMAGE_FILE_NAME = "BackgroundImage"
@@ -103,10 +99,10 @@ def main():
         SPI_SETDESKWALLPAPER = 20 
         ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, get_absolute_path(filename), 0)   
     time.sleep(2)
-    for f in filenames:
-        if (args.k and f == filename):
-            continue
-        os.remove(f)
+    #for f in filenames:
+    #    if (args.k and f == filename):
+   #         continue
+     #   os.remove(f)
 
 if __name__ == "__main__":
     main()
