@@ -34,7 +34,7 @@ def download_image(url, filename):
 def equals_epsilon(val, other, ep):
     return val >= other - ep and val <= other + ep
 
-def get_reddit_image(submissions):
+def get_reddit_image(submissions, output_directory):
     filenames = []
     for submission in submissions:
         if submission.score > MIN_SUBMISSION_SCORE:
@@ -44,7 +44,7 @@ def get_reddit_image(submissions):
             elif submission.url.find(".jpg") >= 0:
                 extension = ".jpg"
             if extension:
-                filename = IMAGE_FILE_NAME + extension
+                filename = os.path.join(output_directory, IMAGE_FILE_NAME + extension)
                 if download_image(submission.url, filename):
                     if filename not in filenames:
                         filenames.append(filename)
@@ -68,6 +68,20 @@ def parse_cfg(file):
                 result[key] = value
         return result
 
+def create_empty_directory(directory):
+    def remove_directory(d):
+        for path in os.listdir(d):
+            fullpath = os.path.join(d, path)
+            if os.path.isdir(fullpath):
+                remove_directory(fullpath)
+            else:
+                os.unlink(fullpath)
+        os.rmdir(d)
+
+    if os.path.isdir(directory):
+        remove_directory(directory)
+    os.mkdir(directory)
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('subreddit', type=str, help="subreddit to find images in")
@@ -75,9 +89,12 @@ def main():
     parser.add_argument('-s', default=MIN_SUBMISSION_SCORE, help="minimum submission score")
     parser.add_argument('--mode', '--m', '-m', default="new", help="where to get images from (new, top, hot)")
     parser.add_argument('--config', '--c', '-c', default="Reddit.cfg", help="where to find reddit api config")
+    parser.add_argument('--output-directory', default="backgrounds", help="Directory to keep images (will be cleared)")
 
     args = parser.parse_args()
 
+    if args.k:
+        create_empty_directory(args.output_directory)
     config = parse_cfg(args.config)
 
     reddit = praw.Reddit(
@@ -97,8 +114,8 @@ def main():
     elif args.mode == "hot":
         submissions = subreddit.hot(limit=None)
     
-    filename, filenames = get_reddit_image(submissions)
-    if (filename):
+    filename, filenames = get_reddit_image(submissions, args.output_directory)
+    if filename:
         SPI_SETDESKWALLPAPER = 20 
         ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, get_absolute_path(filename), 0)   
     time.sleep(2)
